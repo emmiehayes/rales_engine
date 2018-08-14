@@ -127,4 +127,20 @@ describe "invoices API" do
       expect(customer[:last_name]).to eq(customer_1.last_name)
     end
   end
+  context "GET /api/v1/invoices/:id/merchant" do
+    it "returns all merchant for invoice" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahsd', last_name: 'sjme')
+      invoice_1 = Invoice.create(status: 'ljkls', customer_id: customer_1.id, merchant_id: merchant_1.id)
+
+      get "/api/v1/invoices/#{invoice_1.id}/merchant.json"
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant[:name]).to eq(merchant_1.name)
+      expect(merchant[:id]).to eq(merchant_1.id)
+    end
+  end
 end

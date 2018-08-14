@@ -5,9 +5,10 @@ Rails.application.routes.draw do
         get '/find_all', to: 'search#index'
         get '/find', to: 'search#show'
       end
-      
+
       resources :invoices, only: [:index, :show] do
         get '/customer', to: 'invoices/customer#show'
+        get '/merchant', to: 'invoices/merchant#show'
       end
 
       namespace :merchants do
