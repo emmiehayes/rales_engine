@@ -107,5 +107,4 @@ describe "Transactions API" do
       expect(invoice).to_not have_key(:updated_at)
     end
   end
-
 end
