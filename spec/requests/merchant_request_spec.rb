@@ -18,4 +18,22 @@ describe "Merchants API" do
       expect(merchant).to have_key(:updated_at)
     end
   end
+
+  context "GET /api/v1/merchants/:id" do
+    it "returns single merchant" do
+      create_list(:merchant, 3)
+      merch = Merchant.first
+
+      get "/api/v1/merchants/#{merch.id}.json"
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant[:id]).to eq(merch.id)
+      expect(merchant).to have_key(:name)
+      expect(merchant).to have_key(:created_at)
+      expect(merchant).to have_key(:updated_at)
+    end
+  end
 end
