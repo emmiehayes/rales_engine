@@ -9,6 +9,7 @@ describe "invoices API" do
     expect(response).to be_successful
 
     invoices = JSON.parse(response.body, symbolize_names: true)
+
     invoice = invoices.first
 
     expect(invoices.count).to eq(3)
@@ -24,7 +25,7 @@ describe "invoices API" do
 
     invoice = JSON.parse(response.body, symbolize_names: true)
 
-    expect(invoice).to have_key(:id)
+    expect(invoice[:id]).to eq(id)
     expect(invoice).to have_key(:status)
   end
 end
