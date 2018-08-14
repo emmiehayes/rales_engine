@@ -55,9 +55,9 @@ describe "Transactions API" do
       transactions = JSON.parse(response.body, symbolize_names: true)
 
       expect(transactions[0][:id]).to eq(Transaction.first.id)
-      expect(transactions[0][:name]).to eq(Transaction.first.name)
       expect(transactions[0]).to have_key(:id)
-      expect(transactions[0]).to have_key(:name)
+      expect(transactions[0]).to have_key(:invoice_id)
+      expect(transactions[0]).to have_key(:result)
       expect(transactions[0]).to_not have_key(:created_at)
       expect(transactions[0]).to_not have_key(:updated_at)
     end
