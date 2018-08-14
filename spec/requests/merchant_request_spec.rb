@@ -12,9 +12,12 @@ describe "Merchants API" do
       merchants = JSON.parse(response.body, symbolize_names: true)
       merchant = merchants.first
 
+      expect(response).to have_http_status(200)
       expect(merchants.count).to eq(3)
       expect(merchant).to have_key(:id)
       expect(merchant).to have_key(:name)
+      expect(merchant).to_not have_key(:created_at)
+      expect(merchant).to_not have_key(:updated_at)
     end
   end
 
@@ -29,9 +32,12 @@ describe "Merchants API" do
 
       merchant = JSON.parse(response.body, symbolize_names: true)
 
+      expect(response).to have_http_status(200)
       expect(merchant[:id]).to eq(merch.id)
       expect(merchant).to have_key(:id)
       expect(merchant).to have_key(:name)
+      expect(merchant).to_not have_key(:created_at)
+      expect(merchant).to_not have_key(:updated_at)
     end
   end
 end
