@@ -26,8 +26,11 @@ describe "Items API" do
   end
 
   context "GET /api/v1/items/:id" do
-    xit "returns single item" do
-      create_list(:item, 3)
+    it "returns single item" do
+      merchant = Merchant.create(name: 'Bob')
+      item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
+      item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
+      
       it = Item.first
       
       get "/api/v1/items/#{it.id}.json"
@@ -48,8 +51,10 @@ describe "Items API" do
   end
   
   context "GET /api/v1/items/find_all?" do
-    xit "returns objects that match query params" do
-      create_list(:item, 3)
+    it "returns objects that match query params" do
+      merchant = Merchant.create(name: 'Bob')
+      item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
+      item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
 
       get "/api/v1/items/find_all?id=#{Item.first.id}"
 
