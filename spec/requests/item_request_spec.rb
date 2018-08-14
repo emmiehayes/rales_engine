@@ -5,6 +5,7 @@ describe "Items API" do
     it "returns a list of items" do
       merchant = Merchant.create(name: 'Bob')
       item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
+      item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
 
       get "/api/v1/items.json"
 
@@ -13,7 +14,7 @@ describe "Items API" do
       items = JSON.parse(response.body, symbolize_names: true)
       item = items.first
 
-      expect(items.count).to eq(3)
+      expect(items.count).to eq(2)
       expect(item).to have_key(:id)
       expect(item).to have_key(:name)
       expect(item).to have_key(:description)
