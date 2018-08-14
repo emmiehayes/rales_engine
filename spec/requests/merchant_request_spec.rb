@@ -5,7 +5,7 @@ describe "Merchants API" do
     it "returns a list of merchants" do
       create_list(:merchant, 3)
 
-      get "/api/v1/merchants/find_all"
+      get "/api/v1/merchants.json"
 
       expect(response).to be_successful
 
