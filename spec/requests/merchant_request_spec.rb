@@ -13,9 +13,8 @@ describe "Merchants API" do
       merchant = merchants.first
 
       expect(merchants.count).to eq(3)
+      expect(merchant).to have_key(:id)
       expect(merchant).to have_key(:name)
-      expect(merchant).to have_key(:created_at)
-      expect(merchant).to have_key(:updated_at)
     end
   end
 
@@ -31,9 +30,8 @@ describe "Merchants API" do
       merchant = JSON.parse(response.body, symbolize_names: true)
 
       expect(merchant[:id]).to eq(merch.id)
+      expect(merchant).to have_key(:id)
       expect(merchant).to have_key(:name)
-      expect(merchant).to have_key(:created_at)
-      expect(merchant).to have_key(:updated_at)
     end
   end
 end
