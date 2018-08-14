@@ -61,7 +61,7 @@ describe "Merchants API" do
     end
   end
 
-    context "GET /api/v1/merchants/find?" do
+  context "GET /api/v1/merchants/find?" do
     it "returns object that matches query params" do
       create_list(:merchant, 3)
       merch = Merchant.first
@@ -78,6 +78,26 @@ describe "Merchants API" do
       expect(merchant).to have_key(:name)
       expect(merchant).to_not have_key(:created_at)
       expect(merchant).to_not have_key(:updated_at)
+    end
+
+  context "GET /api/v1/merchants/:id" do
+    it "returns single merchant" do
+     merchant_1 = Merchant.create(name: 'Bob')
+     item_1 = merchant_1.items.create(name: 'box', description: 'square', unit_price: 600)
+     item_2 = merchant_1.items.create(name: 'bag', description: 'plastic', unit_price: 100)
+      
+      get "/api/v1/merchants/#{merchant_1.id}/items.json"
+      
+      expect(response).to be_successful
+      
+      items = JSON.parse(response.body, symbolize_names: true)
+      
+      expect(response).to have_http_status(200)
+      expect(items.count).to eq(2)
+      expect(items.first[:name]).to eq(item_1.name)
+      expect(items.first[:description]).to eq(item_1.description)
+      expect(items.first[:unit_price]).to eq(item_1.unit_price)
+      end
     end
   end
 end
