@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :invoices, only: [:index, :show] do
         get '/customer', to: 'invoices/customer#show'
         get '/merchant', to: 'invoices/merchant#show'
+        get '/transactions', to: 'invoices/transactions#index'
       end
 
       namespace :merchants do

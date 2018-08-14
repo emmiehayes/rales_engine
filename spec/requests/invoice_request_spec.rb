@@ -143,4 +143,23 @@ describe "invoices API" do
       expect(merchant[:id]).to eq(merchant_1.id)
     end
   end
+  context "GET /api/v1/invoices/:id/transactions" do
+    it "returns all transactions for invoice" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahsd', last_name: 'sjme')
+      invoice_1 = Invoice.create(status: 'ljkls', customer_id: customer_1.id, merchant_id: merchant_1.id)
+      transaction1 = invoice_1.transactions.create(credit_card_number: '7678345678987654', credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction2 = invoice_1.transactions.create(credit_card_number: '7678343378987654', credit_card_expiration_date: '08/15/2018', result: 'failure')
+
+      get "/api/v1/invoices/#{invoice_1.id}/transactions.json"
+
+      expect(response).to be_successful
+
+      transactions = JSON.parse(response.body, symbolize_names: true)
+
+      expect(transactions[0][:id]).to eq(transaction1.id)
+      expect(transactions[0][:credit_card_number]).to eq(transaction1.credit_card_number)
+      expect(transactions[0][:result]).to eq(transaction1.result)
+    end
+  end
 end
