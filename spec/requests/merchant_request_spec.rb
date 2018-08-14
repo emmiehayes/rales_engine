@@ -79,6 +79,7 @@ describe "Merchants API" do
       expect(merchant).to_not have_key(:created_at)
       expect(merchant).to_not have_key(:updated_at)
     end
+  end
 
   context "GET /api/v1/merchants/:id" do
     it "returns single merchant" do
@@ -97,7 +98,6 @@ describe "Merchants API" do
       expect(items.first[:name]).to eq(item_1.name)
       expect(items.first[:description]).to eq(item_1.description)
       expect(items.first[:unit_price]).to eq(item_1.unit_price)
-      end
     end
   end
 end
