@@ -15,6 +15,8 @@ describe "invoices API" do
     expect(invoices.count).to eq(3)
     expect(invoice).to have_key(:id)
     expect(invoice).to have_key(:status)
+    expect(invoice).to_not have_key(:created_at)
+    expect(invoice).to_not have_key(:updated_at)
   end
   it "can get one invoice by id" do
     id = create(:invoice).id
@@ -27,5 +29,7 @@ describe "invoices API" do
 
     expect(invoice[:id]).to eq(id)
     expect(invoice).to have_key(:status)
+    expect(invoice).to_not have_key(:created_at)
+    expect(invoice).to_not have_key(:updated_at)
   end
 end
