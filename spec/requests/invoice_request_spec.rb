@@ -16,7 +16,7 @@ describe "invoices API" do
     expect(invoice).to have_key(:id)
     expect(invoice).to have_key(:status)
   end
-  it "can get one item by id" do
+  it "can get one invoice by id" do
     id = create(:invoice).id
 
     get "/api/v1/invoices/#{id}.json"
