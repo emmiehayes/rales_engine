@@ -75,8 +75,11 @@ describe "Items API" do
   end
 
   context "GET /api/v1/items/find?" do
-    xit "returns object that matches query params" do
-      create_list(:item, 3)
+    it "returns object that matches query params" do
+      merchant = Merchant.create(name: 'Bob')
+      item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
+      item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
+      
       it = Item.first
       get "/api/v1/items/find?id=#{it.id}"
 
