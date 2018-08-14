@@ -55,5 +55,22 @@ describe "invoices API" do
       expect(invoices[0]).to_not have_key(:created_at)
       expect(invoices[0]).to_not have_key(:updated_at)
     end
+    it "returns objects that match query params" do
+      create_list(:invoice, 3)
+
+      invoice_1 = Invoice.first
+      get "/api/v1/invoices/find_all?status=#{invoice_1.status}"
+
+      expect(response).to be_successful
+
+      invoices = JSON.parse(response.body, symbolize_names: true)
+
+      expect(invoices[0][:id]).to eq(invoice_1.id)
+      expect(invoices[0][:status]).to eq(invoice_1.status)
+      expect(invoices[0]).to have_key(:id)
+      expect(invoices[0]).to have_key(:status)
+      expect(invoices[0]).to_not have_key(:created_at)
+      expect(invoices[0]).to_not have_key(:updated_at)
+    end
   end
 end
