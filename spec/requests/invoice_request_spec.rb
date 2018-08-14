@@ -111,4 +111,20 @@ describe "invoices API" do
       expect(invoice).to_not have_key(:updated_at)
     end
   end
+  context "GET /api/v1/invoices/:id/customer" do
+    it "returns all customer for invoice" do
+      merchant = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahsd', last_name: 'sjme')
+      invoice_1 = Invoice.create(status: 'ljkls', customer_id: customer_1.id, merchant_id: merchant.id)
+
+      get "/api/v1/invoices/#{invoice_1.id}/customer.json"
+
+      expect(response).to be_successful
+
+      customer = JSON.parse(response.body, symbolize_names: true)
+
+      expect(customer[:first_name]).to eq(customer_1.first_name)
+      expect(customer[:last_name]).to eq(customer_1.last_name)
+    end
+  end
 end
