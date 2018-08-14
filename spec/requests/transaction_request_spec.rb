@@ -43,4 +43,23 @@ describe "Transactions API" do
       expect(transaction).to_not have_key(:updated_at)
     end
   end
+
+  context "GET /api/v1/transactions/find_all?" do
+    it "returns objects that match query params" do
+      create_list(:transaction, 3)
+
+      get "/api/v1/transactions/find_all?id=#{Transaction.first.id}"
+
+      expect(response).to be_successful
+
+      transactions = JSON.parse(response.body, symbolize_names: true)
+
+      expect(transactions[0][:id]).to eq(Transaction.first.id)
+      expect(transactions[0][:name]).to eq(Transaction.first.name)
+      expect(transactions[0]).to have_key(:id)
+      expect(transactions[0]).to have_key(:name)
+      expect(transactions[0]).to_not have_key(:created_at)
+      expect(transactions[0]).to_not have_key(:updated_at)
+    end
+  end
 end
