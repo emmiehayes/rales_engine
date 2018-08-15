@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   namespace :api do
     namespace :v1 do
 
@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
       resources :merchants, only: [:index, :show] do
         get '/items', to: 'merchants/items#show'
+        get '/revenue', to: 'merchants/revenue#show'
       end
 
       namespace :transactions do
