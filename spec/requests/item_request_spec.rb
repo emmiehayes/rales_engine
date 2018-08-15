@@ -30,15 +30,15 @@ describe "Items API" do
       merchant = Merchant.create(name: 'Bob')
       item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
       item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
-      
+
       it = Item.first
-      
+
       get "/api/v1/items/#{it.id}.json"
-      
+
       expect(response).to be_successful
-      
+
       item = JSON.parse(response.body, symbolize_names: true)
-    
+
       expect(item[:id]).to eq(it.id)
       expect(item).to have_key(:id)
       expect(item).to have_key(:name)
@@ -49,7 +49,7 @@ describe "Items API" do
       expect(item).to_not have_key(:updated_at)
     end
   end
-  
+
   context "GET /api/v1/items/find_all?" do
     it "returns objects that match query params" do
       merchant = Merchant.create(name: 'Bob')
@@ -69,8 +69,8 @@ describe "Items API" do
       expect(items[0]).to have_key(:description)
       expect(items[0]).to have_key(:unit_price)
       expect(items[0]).to have_key(:merchant_id)
-      expect(items[0]).to_not have_key(:created_at)
-      expect(items[0]).to_not have_key(:updated_at)
+      expect(items[0]).to have_key(:created_at)
+      expect(items[0]).to have_key(:updated_at)
     end
   end
 
@@ -79,7 +79,7 @@ describe "Items API" do
       merchant = Merchant.create(name: 'Bob')
       item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
       item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
-      
+
       it = Item.first
       get "/api/v1/items/find?id=#{it.id}"
 
@@ -93,8 +93,8 @@ describe "Items API" do
       expect(item).to have_key(:name)
       expect(item).to have_key(:description)
       expect(item).to have_key(:name)
-      expect(item).to_not have_key(:created_at)
-      expect(item).to_not have_key(:updated_at)
+      expect(item).to have_key(:created_at)
+      expect(item).to have_key(:updated_at)
     end
   end
 end
