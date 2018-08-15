@@ -101,4 +101,24 @@ describe "Customers API" do
       expect(invoices[1]).to_not have_key(:updated_at)
     end
   end
+
+  context 'get /api/v1/customers/:id/transactions' do
+    it "returns collection of transactions per customer query" do
+      merchant = Merchant.create(name: 'blah')
+      customer = Customer.create(first_name: 'blahblah', last_name: 'blahblahblah')
+      invoice = Invoice.create(status: 'blahmillion', customer_id: customer.id, merchant_id: merchant.id)
+      transaction_1 = Transaction.create(invoice_id: invoice.id, credit_card_number: 345678567893245, credit_card_expiration_date: "2018-08-14 12:22:31", result: 'milliom')
+      transaction_2 = Transaction.create(invoice_id: invoice.id, credit_card_number: 879876546745676, credit_card_expiration_date: "2018-07-14 08:24:01", result: 'billion')
+   
+      get "/api/v1/customers/#{customer.id}/transactions.json"
+
+      expect(response).to be_successful
+
+      transactions = JSON.parse(response.body, symbolize_names: true)
+
+      expect(transactions[0][:invoice_id]).to eq(invoice.id)
+      expect(invoice.customer_id).to eq(customer.id)
+      expect(transactions.count).to eq(2)
+    end
+  end
 end
