@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Invoices API" do
+describe "Invoice-Items API" do
   context 'get /api/v1/invoice_items' do
     it "sends a list of invoice_items" do
       create_list(:invoice_item, 3)
