@@ -4,4 +4,5 @@ class SearchItemSerializer < ActiveModel::Serializer
   def unit_price
     '%.2f' % (object.unit_price/100.0)
   end
+  
 end
