@@ -157,9 +157,55 @@ describe "invoices API" do
 
       transactions = JSON.parse(response.body, symbolize_names: true)
 
+      expect(transactions.count).to eq(2)
       expect(transactions[0][:id]).to eq(transaction1.id)
       expect(transactions[0][:credit_card_number]).to eq(transaction1.credit_card_number)
       expect(transactions[0][:result]).to eq(transaction1.result)
+    end
+  end
+  context "GET /api/v1/invoices/:id/items" do
+    it "returns all items for invoice" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahsd', last_name: 'sjme')
+      invoice_1 = Invoice.create(status: 'ljkls', customer_id: customer_1.id, merchant_id: merchant_1.id)
+      item1 = invoice_1.items.create(name: 'blah', description: '08/10/2018', unit_price: 1000, merchant_id: merchant_1.id)
+      item2 = invoice_1.items.create(name: 'sing', description: 'ten', unit_price: 1000, merchant_id: merchant_1.id)
+
+      get "/api/v1/invoices/#{invoice_1.id}/items.json"
+
+      expect(response).to be_successful
+
+      items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(items.count).to eq(2)
+      expect(items[0][:id]).to eq(item1.id)
+      expect(items[0][:name]).to eq(item1.name)
+      expect(items[0][:description]).to eq(item1.description)
+      expect(items[0][:unit_price]).to eq("10.00")
+      expect(items[0][:merchant_id]).to eq(item1.merchant_id)
+    end
+  end
+  context "GET /api/v1/invoices/:id/invoice_items" do
+    it "returns all invoice_items for invoice" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahsd', last_name: 'sjme')
+      invoice_1 = Invoice.create(status: 'ljkls', customer_id: customer_1.id, merchant_id: merchant_1.id)
+      item1 = Item.create(name: 'blah', description: '08/10/2018', unit_price: 1000, merchant_id: merchant_1.id)
+      invoice_item1 = invoice_1.invoice_items.create(item_id: item1.id, invoice_id: invoice_1.id, quantity: 7, unit_price: 333)
+      invoice_item2 = invoice_1.invoice_items.create(item_id: item1.id, invoice_id: invoice_1.id, quantity: 7, unit_price: 333)
+
+      get "/api/v1/invoices/#{invoice_1.id}/invoice_items.json"
+
+      expect(response).to be_successful
+
+      invoice_items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(invoice_items.count).to eq(2)
+      expect(invoice_items[-1][:id]).to eq(invoice_item2.id)
+      expect(invoice_items[-1][:item_id]).to eq(item1.id)
+      expect(invoice_items[-1][:invoice_id]).to eq(invoice_1.id)
+      expect(invoice_items[-1][:quantity]).to eq(invoice_item2.quantity)
+      expect(invoice_items[-1][:unit_price]).to eq("3.33")
     end
   end
 end
