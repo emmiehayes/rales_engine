@@ -97,4 +97,47 @@ describe "Items API" do
       expect(item).to have_key(:updated_at)
     end
   end
+
+  context "GET /api/v1/items/:id/invoice_items" do
+    it "returns all invoice_items for item" do
+      merchant_1 = Merchant.create(name: 'blah')
+      customer_1 = Customer.create(first_name: 'blahblah', last_name: 'blahblahblah')
+      invoice_1 = Invoice.create(status: 'blahmillion', customer_id: customer_1.id, merchant_id: merchant_1.id)
+      item_1 = Item.create(name: 'blahtrillion', description: '08/10/2018', unit_price: 1000, merchant_id: merchant_1.id)
+      invoice_item_1 = invoice_1.invoice_items.create(item_id: item_1.id, invoice_id: invoice_1.id, quantity: 7, unit_price: 333)
+      invoice_item_2 = invoice_1.invoice_items.create(item_id: item_1.id, invoice_id: invoice_1.id, quantity: 7, unit_price: 333)
+
+      get "/api/v1/items/#{item_1.id}/invoice_items.json"
+
+      expect(response).to be_successful
+
+      invoice_items = JSON.parse(response.body, symbolize_names: true)
+
+      expect(invoice_items.count).to eq(2)
+      expect(invoice_items[0][:id]).to eq(invoice_item_1.id)
+      expect(invoice_items[0][:item_id]).to eq(item_1.id)
+      expect(invoice_items[0][:invoice_id]).to eq(invoice_1.id)
+      expect(invoice_items[0][:quantity]).to eq(invoice_item_1.quantity)
+      expect(invoice_items[0][:unit_price]).to eq("3.33")
+    end
+
+  context "GET /api/v1/items/:id/merchant" do
+    it "returns all merchant for item" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahblah', last_name: 'blahblahblah')
+      item_1 = Item.create(name: 'blahtrillion', description: '08/10/2018', unit_price: 1000, merchant_id: merchant_1.id)
+
+      get "/api/v1/items/#{item_1.id}/merchant.json"
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant[:name]).to eq(merchant_1.name)
+      expect(merchant[:id]).to eq(merchant_1.id)
+    end
+  end
+
+
+  end
 end
