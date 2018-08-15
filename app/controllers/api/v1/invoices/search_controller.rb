@@ -8,8 +8,6 @@ class Api::V1::Invoices::SearchController < ApplicationController
     render json: Invoice.find_by(search_params)
   end
 
-
-
   private
 
   def search_params

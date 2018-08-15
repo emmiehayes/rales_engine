@@ -119,7 +119,25 @@ describe "Items API" do
       expect(invoice_items[0][:invoice_id]).to eq(invoice_1.id)
       expect(invoice_items[0][:quantity]).to eq(invoice_item_1.quantity)
       expect(invoice_items[0][:unit_price]).to eq("3.33")
-
     end
+
+  context "GET /api/v1/items/:id/merchant" do
+    it "returns all merchant for item" do
+      merchant_1 = Merchant.create!(name: 'blah')
+      customer_1 = Customer.create!(first_name: 'blahblah', last_name: 'blahblahblah')
+      item_1 = Item.create(name: 'blahtrillion', description: '08/10/2018', unit_price: 1000, merchant_id: merchant_1.id)
+
+      get "/api/v1/items/#{item_1.id}/merchant.json"
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant[:name]).to eq(merchant_1.name)
+      expect(merchant[:id]).to eq(merchant_1.id)
+    end
+  end
+
+
   end
 end
