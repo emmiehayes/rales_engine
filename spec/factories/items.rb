@@ -3,6 +3,8 @@ FactoryBot.define do
     name "MyString"
     description "MyText"
     unit_price 1
-    merchant nil
+    merchant
+    created_at { Faker::Time.between(4.days.ago, Time.now, :all) }
+    updated_at { Faker::Time.between(2.days.ago, Time.now, :all) }
   end
 end

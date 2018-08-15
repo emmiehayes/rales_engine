@@ -92,7 +92,8 @@ describe "Merchants API" do
       expect(items.count).to eq(2)
       expect(items.first[:name]).to eq(item_1.name)
       expect(items.first[:description]).to eq(item_1.description)
-      expect(items.first[:unit_price]).to eq("6.00")
+      expect(items.first[:unit_price]).to eq('6.00')
+
     end
   end
 end
