@@ -21,6 +21,7 @@ Rails.application.routes.draw do
         get '/find', to: 'search#show'
         get '/most_items', to: 'most_items#show'
         get '/most_revenue', to: 'most_revenue#index'
+        get '/revenue', to: 'master_revenue#show'
       end
 
       resources :merchants, only: [:index, :show] do
@@ -28,7 +29,6 @@ Rails.application.routes.draw do
         get '/invoices', to: 'merchants/invoices#show'
         get '/revenue', to: 'merchants/total_revenue#show'
         get '/favorite_customer', to: 'merchants/favorite_customer#show'
-        get '/revenue', to: 'merchants/revenue#show'
         get '/customers_with_pending_invoices', to: 'merchants/customers_with_pending_invoices#index'
       end
 
