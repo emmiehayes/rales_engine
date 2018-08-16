@@ -174,4 +174,28 @@ describe "Merchants API" do
       expect(customer[:id]).to eq(customer_1.id)
     end
   end
+
+  context "GET /api/v1/merchants/:id/revenue" do
+    it "returns revenue for merchant" do
+      merchant = create(:merchant)
+      item1 = create(:item)
+      customer = create(:customer)
+      invoice1 = merchant.invoices.create(customer_id: customer.id, status: 'something')
+      invoice2 = merchant.invoices.create(customer_id: customer.id, status: 'something')
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice1.id)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice2.id)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+
+      get "/api/v1/merchants/#{merchant.id}/revenue"
+
+      expect(response).to be_successful
+
+      revenue = JSON.parse(response.body, symbolize_names: true)
+
+      expect(revenue).to have_key(:revenue)
+      expect(revenue).to_not have_key(:id)
+      expect(revenue[:revenue]).to eq("30.00")
+    end
+  end
 end
