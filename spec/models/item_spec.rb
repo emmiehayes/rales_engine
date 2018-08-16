@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Item, type: :model do
-  it {should belong_to :merchant}
-  it {should have_many :invoice_items}
-  it {should have_many :invoices}
+  it { should belong_to :merchant }
+  it { should have_many :invoice_items }
+  it { should have_many :invoices }
 
   describe "class methods" do
     it "returns all items most sold" do
@@ -74,4 +74,5 @@ RSpec.describe Item, type: :model do
       expect(item1.best_day).to eq(invoice3.created_at)
     end
   end
+
 end
