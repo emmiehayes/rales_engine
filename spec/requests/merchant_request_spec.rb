@@ -20,6 +20,23 @@ describe "Merchants API" do
     end
   end
 
+  context "GET /api/v1/merchants/random" do
+    it "returns a random merchant" do
+      create_list(:merchant, 3)
+
+      get "/api/v1/merchants/random.json"
+
+      expect(response).to be_successful
+
+      merchant = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchant).to have_key(:id)
+      expect(merchant).to have_key(:name)
+      expect(merchant).to_not have_key(:created_at)
+      expect(merchant).to_not have_key(:updated_at)
+    end
+  end
+
   context "GET /api/v1/merchants/:id" do
     it "returns single merchant" do
       create_list(:merchant, 3)
@@ -302,7 +319,7 @@ describe "Merchants API" do
       expect(customers[0][:last_name]).to eq(customer1.last_name)
     end
   end
-  
+
   context "GET /api/v1/merchants/master_revenue?date=x" do
     it 'returns the total merchant revenue for all merchants on a given date' do
       merchant_1 = create(:merchant)
