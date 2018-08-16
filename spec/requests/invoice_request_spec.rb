@@ -21,6 +21,23 @@ describe "Invoices API" do
     end
   end
 
+  context 'get /api/v1/invoices/random' do
+    it "sends a random invoice" do
+      create_list(:invoice, 3)
+
+      get "/api/v1/invoices/random.json"
+
+      expect(response).to be_successful
+
+      invoice = JSON.parse(response.body, symbolize_names: true)
+
+      expect(invoice).to have_key(:id)
+      expect(invoice).to have_key(:status)
+      expect(invoice).to_not have_key(:created_at)
+      expect(invoice).to_not have_key(:updated_at)
+    end
+  end
+
   context "get /api/v1/invoices/:id" do
     it "can get one invoice by id" do
       id = create(:invoice).id
