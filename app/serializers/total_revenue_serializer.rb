@@ -3,6 +3,6 @@ class TotalRevenueSerializer < ActiveModel::Serializer
   attributes :revenue
 
   def revenue
-    object.total_revenue.to_i.to_s.insert(-3, '.')
+    object.to_i.to_s.insert(-3, '.')
   end
 end
