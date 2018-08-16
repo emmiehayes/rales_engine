@@ -273,4 +273,40 @@ describe "Merchants API" do
       expect(merchants.count).to eq(3)
     end
   end
+
+  context "GET /api/v1/merchants/master_revenue?date=x" do
+    it 'returns the total merchant revenue for all merchants on a given date' do
+      merchant_1 = create(:merchant)
+      customer_1 = create(:customer)
+      invoice_1 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something')
+      invoice_2 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something')
+      item_1 = merchant_1.items.create(name: 'blah', description: 'dkhgaer', unit_price: 1000)
+      item_1 = merchant_1.items.create(name: 'blah', description: 'asjkgn', unit_price: 1000)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_1.id)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_2.id)
+      invoice_item_1 = InvoiceItem.create(item_id: item_1.id, invoice_id: invoice_1.id, quantity: 1, unit_price: 1000)
+      invoice_item_2 = InvoiceItem.create(item_id: item_1.id, invoice_id: invoice_2.id, quantity: 2, unit_price: 1000)
+
+      merchant_2 = create(:merchant)
+      customer_2 = create(:customer)
+      invoice_3 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something')
+      invoice_4 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something')
+      item_2 = merchant_2.items.create(name: 'blah', description: 'osit', unit_price: 1000)
+      item_2 = merchant_2.items.create(name: 'blah', description: 'sagnero', unit_price: 1000)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_3.id)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_4.id)
+      invoice_item_3 = InvoiceItem.create(item_id: item_2.id, invoice_id: invoice_3.id, quantity: 1, unit_price: 1000)
+      invoice_item_4 = InvoiceItem.create(item_id: item_2.id, invoice_id: invoice_4.id, quantity: 2, unit_price: 1000)
+ 
+      get "/api/v1/merchants/revenue?date=2018-08-16"
+
+      revenue = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+
+      expect(revenue).to have_key(:total_revenue)
+      expect(revenue).to_not have_key(:id)
+      expect(revenue[:total_revenue]).to eq("60.00")
+    end
+  end
 end
