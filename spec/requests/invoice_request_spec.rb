@@ -20,6 +20,7 @@ describe "Invoices API" do
       expect(invoice).to_not have_key(:updated_at)
     end
   end
+
   context "get /api/v1/invoices/:id" do
     it "can get one invoice by id" do
       id = create(:invoice).id
@@ -36,6 +37,7 @@ describe "Invoices API" do
       expect(invoice).to_not have_key(:updated_at)
     end
   end
+
   context "GET /api/v1/invoices/find_all?" do
     it "returns objects that match query params" do
       create_list(:invoice, 3)
@@ -55,6 +57,7 @@ describe "Invoices API" do
       expect(invoices[0]).to_not have_key(:created_at)
       expect(invoices[0]).to_not have_key(:updated_at)
     end
+
     it "returns objects that match query params" do
       create_list(:invoice, 3)
 
@@ -73,6 +76,7 @@ describe "Invoices API" do
       expect(invoices[0]).to_not have_key(:updated_at)
     end
   end
+
   context "GET /api/v1/invoices/find?" do
     it "returns objects that match query params" do
       create_list(:invoice, 3)
@@ -92,6 +96,7 @@ describe "Invoices API" do
       expect(invoice).to_not have_key(:created_at)
       expect(invoice).to_not have_key(:updated_at)
     end
+
     it "returns objects that match query params" do
       create_list(:invoice, 3)
 
@@ -111,6 +116,7 @@ describe "Invoices API" do
       expect(invoice).to_not have_key(:updated_at)
     end
   end
+
   context "GET /api/v1/invoices/:id/customer" do
     it "returns all customer for invoice" do
       merchant = Merchant.create!(name: 'blah')
@@ -127,6 +133,7 @@ describe "Invoices API" do
       expect(customer[:last_name]).to eq(customer_1.last_name)
     end
   end
+
   context "GET /api/v1/invoices/:id/merchant" do
     it "returns all merchant for invoice" do
       merchant_1 = Merchant.create!(name: 'blah')
@@ -143,6 +150,7 @@ describe "Invoices API" do
       expect(merchant[:id]).to eq(merchant_1.id)
     end
   end
+
   context "GET /api/v1/invoices/:id/transactions" do
     it "returns all transactions for invoice" do
       merchant_1 = Merchant.create!(name: 'blah')
@@ -163,6 +171,7 @@ describe "Invoices API" do
       expect(transactions[0][:result]).to eq(transaction1.result)
     end
   end
+
   context "GET /api/v1/invoices/:id/items" do
     it "returns all items for invoice" do
       merchant_1 = Merchant.create!(name: 'blah')
@@ -185,6 +194,7 @@ describe "Invoices API" do
       expect(items[0][:merchant_id]).to eq(item1.merchant_id)
     end
   end
+
   context "GET /api/v1/invoices/:id/invoice_items" do
     it "returns all invoice_items for invoice" do
       merchant_1 = Merchant.create!(name: 'blah')
