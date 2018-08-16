@@ -38,8 +38,29 @@ RSpec.describe Merchant, type: :model do
 
       expect(merchant.total_revenue).to eq(3000)
     end
+    
+    it "can find customers with pending invoices" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      merchant3 = create(:merchant)
+      merchant4 = create(:merchant)
+      item1 = create(:item)
+      customer1 = create(:customer)
+      customer2 = create(:customer)
+      customer3 = create(:customer)
+      invoice1 = merchant1.invoices.create(customer_id: customer1.id, status: 'failed')
+      invoice2 = merchant1.invoices.create(customer_id: customer1.id, status: 'failed')
+      invoice3 = merchant3.invoices.create(customer_id: customer2.id, status: 'success')
+      invoice4 = merchant4.invoices.create(customer_id: customer3.id, status: 'success')
+      transaction1 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'failed', invoice_id: invoice1.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'failed', invoice_id: invoice2.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice3.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice4.id)
+
+      expect(merchant1.customers_with_pending_invoices).to eq([customer1])
+    end
   end
-  
+
   context "class methods" do
     it "can find merchants with most items" do
       merchant1 = create(:merchant)

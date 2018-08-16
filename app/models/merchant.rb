@@ -22,15 +22,29 @@ class Merchant < ApplicationRecord
       .where(updated_at: date.beginning_of_day..date.end_of_day)
       .joins(:transactions, :invoice_items)
       .where(transactions: {result: 'success'})
-      .sum("invoice_items.quantity*invoice_items.unit_price") 
+      .sum("invoice_items.quantity*invoice_items.unit_price")
     else
       invoices
       .joins(:transactions, :invoice_items)
       .where(transactions: {result: 'success'})
-      .sum("invoice_items.quantity*invoice_items.unit_price") 
+      .sum("invoice_items.quantity*invoice_items.unit_price")
     end
   end
-  
+
+  def customers_with_pending_invoices
+    customers.find_by_sql("
+      SELECT customers.* FROM customers
+      INNER JOIN invoices ON customers.id = invoices.customer_id
+      INNER JOIN transactions ON invoices.id = transactions.invoice_id
+      WHERE invoices.merchant_id = #{id}
+      EXCEPT
+      SELECT customers.* FROM customers
+      INNER JOIN invoices ON customers.id = invoices.customer_id
+      INNER JOIN transactions ON invoices.id = transactions.invoice_id
+      WHERE invoices.merchant_id = #{id}
+      AND transactions.result = 'success';")
+  end
+
   def self.most_revenue(limit = 3)
     select('merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS total_revenue')
     .joins(:transactions, :invoice_items)
@@ -48,7 +62,7 @@ class Merchant < ApplicationRecord
     .order("item_total DESC")
     .limit(quantity.to_i)
   end
-
+  
   def self.master_revenue(date = nil)
     if date
       date = Date.parse(date)
@@ -63,4 +77,3 @@ class Merchant < ApplicationRecord
     end
   end
 end
-
