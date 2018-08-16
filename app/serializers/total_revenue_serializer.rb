@@ -1,5 +1,4 @@
 class TotalRevenueSerializer < ActiveModel::Serializer
-  include ActionView::Helpers::NumberHelper
   attributes :revenue
 
   def revenue

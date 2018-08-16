@@ -16,13 +16,19 @@ class Merchant < ApplicationRecord
   end
 
   def total_revenue(date = nil)
-    inv = invoices unless date
-    date = Date.parse(date) if date
-    inv = invoices.where(updated_at: date.beginning_of_day..date.end_of_day) if date
-      inv
-        .joins(:transactions, :invoice_items)
-        .where(transactions: {result: 'success'})
-        .sum("invoice_items.quantity*invoice_items.unit_price")
+    if date
+      date = Date.parse(date)
+      invoices
+      .where(updated_at: date.beginning_of_day..date.end_of_day)
+      .joins(:transactions, :invoice_items)
+      .where(transactions: {result: 'success'})
+      .sum("invoice_items.quantity*invoice_items.unit_price") 
+    else
+      invoices
+      .joins(:transactions, :invoice_items)
+      .where(transactions: {result: 'success'})
+      .sum("invoice_items.quantity*invoice_items.unit_price") 
+    end
   end
   
   def self.most_revenue(limit = 3)
