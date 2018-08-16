@@ -128,21 +128,16 @@ describe "Merchants API" do
       merchant_2 = Merchant.create(name: 'Banana')
       merchant_3 = Merchant.create(name: 'Carrot')
       merchant_4 = Merchant.create(name: 'Dumpling')
-
       customer = Customer.create(first_name: 'Bob', last_name: 'Billy')
-
       item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
-
       invoice_1 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
       invoice_2 = Invoice.create(customer_id: customer.id, merchant_id: merchant_2.id, status:'test')
       invoice_3 = Invoice.create(customer_id: customer.id, merchant_id: merchant_3.id, status:'test')
       invoice_4 = Invoice.create(customer_id: customer.id, merchant_id: merchant_4.id, status:'test')
-
       transaction_1 = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
-
       invoice_item_1 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 4, unit_price: 400)
       invoice_item_2 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 3, unit_price: 400)
       invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 3, unit_price: 400)
@@ -163,26 +158,21 @@ describe "Merchants API" do
   end
 
   context "GET /api/v1/merchants/favorite_customer" do
-    it "returns customer with most total number of successful transactions " do
+    it "returns customer with most total number of successful transactions" do
       merchant_1 = Merchant.create(name: 'Apple')
       merchant_2 = Merchant.create(name: 'Banana')
       merchant_3 = Merchant.create(name: 'Carrot')
       merchant_4 = Merchant.create(name: 'Dumpling')
-
       customer_1 = Customer.create(first_name: 'Bob', last_name: 'Billy')
-
       item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
-
       invoice_1 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_1.id, status:'test')
       invoice_2 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_2.id, status:'test')
       invoice_3 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_3.id, status:'test')
       invoice_4 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_4.id, status:'test')
-
       transaction_1 = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
-
       invoice_item_1 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 4, unit_price: 400)
       invoice_item_2 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 3, unit_price: 400)
       invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 3, unit_price: 400)
@@ -223,6 +213,7 @@ describe "Merchants API" do
       expect(revenue).to_not have_key(:id)
       expect(revenue[:revenue]).to eq("30.00")
     end
+
     it "returns revenue for merchant given a date" do
       merchant = create(:merchant)
       item1 = create(:item)
@@ -245,6 +236,7 @@ describe "Merchants API" do
       expect(revenue[:revenue]).to eq("10.00")
     end
   end
+
   context "GET /api/v1/merchants/most_items?quantity=x" do
     it "can see merchants with most items" do
       merchant1 = create(:merchant)
