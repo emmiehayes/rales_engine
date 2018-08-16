@@ -25,6 +25,28 @@ describe "Items API" do
     end
   end
 
+  context "GET /api/v1/items/random" do
+    it "returns a random item" do
+      merchant = Merchant.create(name: 'Bob')
+      item_1 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 500)
+      item_2 = merchant.items.create(name: 'ajslg', description: 'ashge', unit_price: 643)
+
+      get "/api/v1/items/random.json"
+
+      expect(response).to be_successful
+
+      item = JSON.parse(response.body, symbolize_names: true)
+
+      expect(item).to have_key(:id)
+      expect(item).to have_key(:name)
+      expect(item).to have_key(:description)
+      expect(item).to have_key(:unit_price)
+      expect(item).to have_key(:merchant_id)
+      expect(item).to_not have_key(:created_at)
+      expect(item).to_not have_key(:updated_at)
+    end
+  end
+
   context "GET /api/v1/items/:id" do
     it "returns single item" do
       merchant = Merchant.create(name: 'Bob')
@@ -171,7 +193,7 @@ describe "Items API" do
       invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
       invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
 
-    
+
       get "/api/v1/items/#{item1.id}/best_day"
 
       expect(response).to be_successful
@@ -254,10 +276,7 @@ describe "Items API" do
       items = JSON.parse(response.body, symbolize_names: true)
 
       expect(items.count).to eq(3)
-      expect(items[0][:id]).to eq(Item.third.id)   
+      expect(items[0][:id]).to eq(Item.third.id)
     end
   end
 end
-
-
-     
