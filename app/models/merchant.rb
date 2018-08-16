@@ -7,16 +7,16 @@ class Merchant < ApplicationRecord
 
   def favorite_customer
     customers.select('customers.*, COUNT(invoices.id) AS invoice_count')
-      .joins(:transactions)
-      .where(transactions: {result: 'success'})
-      .group(:id)
-      .order('invoice_count DESC')
-      .limit(1)
-      .first
+    .joins(:transactions)
+    .where(transactions: {result: 'success'})
+    .group(:id)
+    .order('invoice_count DESC')
+    .limit(1)
+    .first
   end
 
   def total_revenue(date = nil)
-    inv = invoices
+    inv = invoices unless date
     date = Date.parse(date) if date
     inv = invoices.where(updated_at: date.beginning_of_day..date.end_of_day) if date
       inv
@@ -27,11 +27,11 @@ class Merchant < ApplicationRecord
   
   def self.most_revenue(limit = 3)
     select('merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS total_revenue')
-      .joins(:transactions, :invoice_items)
-      .except(transactions: { result: 'failed' })
-      .group('merchants.id')
-      .order('total_revenue DESC')
-      .limit(limit)
+    .joins(:transactions, :invoice_items)
+    .except(transactions: { result: 'failed' })
+    .group('merchants.id')
+    .order('total_revenue DESC')
+    .limit(limit)
   end
 
   def self.most_sold(quantity = 3)

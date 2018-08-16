@@ -14,7 +14,7 @@ class Item < ApplicationRecord
   end
 
   def self.most_revenue(limit = 3)
-  select('items.*, sum(invoice_items.quantity) AS total_quantity')
+    select('items.*, sum(invoice_items.quantity) AS total_quantity')
     .joins(:transactions, :invoice_items)
     .where(transactions: { result: 'success' })
     .group(:id)
