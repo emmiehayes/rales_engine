@@ -98,8 +98,7 @@ RSpec.describe Merchant, type: :model do
       expect(Merchant.most_revenue(3)).to_not include(merchant_4)
     end
 
-
-    it "total_revenue(date)" do
+    it "master_revenue(date)" do
       merchant_1 = create(:merchant)
       customer_1 = create(:customer)
       invoice_1 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something')
