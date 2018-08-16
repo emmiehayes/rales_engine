@@ -38,7 +38,23 @@ class Merchant < ApplicationRecord
     select("merchants.*, sum(invoice_items.quantity) AS item_total")
     .joins(invoices: [:transactions, :invoice_items])
     .where(transactions: {result: 'success'})
-    .group(:id).order("item_total DESC")
+    .group(:id)
+    .order("item_total DESC")
     .limit(quantity.to_i)
   end
+
+  def self.master_revenue(date = nil)
+    if date
+      date = Date.parse(date)
+      joins(invoices: [:transactions, :invoice_items])
+      .where(invoices: { updated_at: date.beginning_of_day..date.end_of_day})
+      .where(transactions: { result: 'success'})
+      .sum('invoice_items.quantity * invoice_items.unit_price')
+    else
+      joins(invoices: [:transactions, :invoice_items])
+      .where(transactions: { result: 'success'})
+      .sum('invoice_items.quantity * invoice_items.unit_price')
+    end
+  end
 end
+
