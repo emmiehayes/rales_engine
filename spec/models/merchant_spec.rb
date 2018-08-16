@@ -122,6 +122,7 @@ RSpec.describe Merchant, type: :model do
       invoice_item_4 = InvoiceItem.create(item_id: item_2.id, invoice_id: invoice_4.id, quantity: 2, unit_price: 1000)
 
       expect(Merchant.master_revenue("2018-08-16")).to eq(6000)
+      expect(Merchant.master_revenue).to eq(6000)
     end
   end
 end
