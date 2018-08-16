@@ -4,6 +4,28 @@ RSpec.describe Merchant, type: :model do
   it {should have_many :invoices}
   it {should have_many :items}
 
+  context 'instance methods' do
+    it '.favorite_customer' do 
+      merchant_1 = Merchant.create(name: 'Apple')
+
+      customer_1 = Customer.create(first_name: 'Bob', last_name: 'Billy')
+      customer_2 = Customer.create(first_name: 'Jane', last_name: 'Billy')
+      customer_3 = Customer.create(first_name: 'Susie', last_name: 'Billy')
+
+      invoice_1 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_1.id, status:'test')
+      invoice_2 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_1.id, status:'test')
+      invoice_3 = Invoice.create(customer_id: customer_2.id, merchant_id: merchant_1.id, status:'test')
+      invoice_4 = Invoice.create(customer_id: customer_3.id, merchant_id: merchant_1.id, status:'test')
+
+      transaction_1 = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+    
+      expect(merchant_1.favorite_customer).to eq(customer_1)
+    end
+  end
+
   context 'class methods' do
     it 'most_revenue(quantity)' do
       merchant_1 = Merchant.create(name: 'Apple')
