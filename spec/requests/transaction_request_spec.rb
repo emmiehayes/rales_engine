@@ -23,17 +23,37 @@ describe "Transactions API" do
     end
   end
 
+  context "GET /api/v1/transactions/random" do
+    it "returns a random transaction" do
+      create_list(:transaction, 3)
+
+      get "/api/v1/transactions/random.json"
+
+      expect(response).to be_successful
+
+      transaction = JSON.parse(response.body, symbolize_names: true)
+
+      expect(transaction).to have_key(:id)
+      expect(transaction).to have_key(:invoice_id)
+      expect(transaction).to have_key(:result)
+      expect(transaction).to have_key(:credit_card_number)
+      expect(transaction).to_not have_key(:credit_card_expiration_date)
+      expect(transaction).to_not have_key(:created_at)
+      expect(transaction).to_not have_key(:updated_at)
+    end
+  end
+
    context "GET /api/v1/transactions/:id" do
     it "returns single transaction" do
       create_list(:transaction, 3)
       transact = Transaction.first
-      
+
       get "/api/v1/transactions/#{transact.id}.json"
-      
+
       expect(response).to be_successful
-      
+
       transaction = JSON.parse(response.body, symbolize_names: true)
-      
+
       expect(transaction[:id]).to eq(transact.id)
       expect(transaction).to have_key(:invoice_id)
       expect(transaction).to have_key(:result)
@@ -89,13 +109,13 @@ describe "Transactions API" do
     customer = Customer.create!(first_name: 'blahblah', last_name: 'blahblahblah')
     invoice_1 = Invoice.create(status: 'blahmillion', customer_id: customer.id, merchant_id: merchant.id)
     transaction = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
-    
+
       get "/api/v1/transactions/#{transaction.id}/invoice.json"
 
       expect(response).to be_successful
-      
+
       invoice = JSON.parse(response.body, symbolize_names: true)
-      
+
       expect(invoice[:id]).to eq(invoice_1.id)
       expect(invoice).to have_key(:customer_id)
       expect(invoice).to have_key(:merchant_id)
