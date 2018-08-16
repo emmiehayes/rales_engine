@@ -8,7 +8,7 @@ RSpec.describe Merchant, type: :model do
   it { should have_many(:customers).through(:invoices) }
 
   context 'instance methods' do
-    it '.favorite_customer' do 
+    it '.favorite_customer' do
       merchant_1 = Merchant.create(name: 'Apple')
 
       customer_1 = Customer.create(first_name: 'Bob', last_name: 'Billy')
@@ -24,7 +24,7 @@ RSpec.describe Merchant, type: :model do
       transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
       transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
-    
+
       expect(merchant_1.favorite_customer).to eq(customer_1)
     end
 
@@ -42,14 +42,40 @@ RSpec.describe Merchant, type: :model do
       expect(merchant.total_revenue).to eq(3000)
     end
   end
+  context "class methods" do
+    it "can find merchants with most items" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      merchant3 = create(:merchant)
+      merchant4 = create(:merchant)
+      item1 = create(:item)
+      customer = create(:customer)
+      invoice1 = merchant1.invoices.create(customer_id: customer.id, status: 'something')
+      invoice2 = merchant2.invoices.create(customer_id: customer.id, status: 'something')
+      invoice3 = merchant3.invoices.create(customer_id: customer.id, status: 'something')
+      invoice4 = merchant4.invoices.create(customer_id: customer.id, status: 'something')
+      transaction1 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice1.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice2.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice3.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice4.id)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+      invoice_item3 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice3.id, quantity: 4, unit_price: 1000)
+      invoice_item3 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice3.id, quantity: 4, unit_price: 1000)
+      invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
+      invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
 
-  context 'class methods' do
+      expect(Merchant.most_sold(3)).to eq([merchant3, merchant4, merchant2])
+      expect(Merchant.most_sold(3)).not_to include(merchant1)
+    end
     it 'most_revenue(quantity)' do
       merchant_1 = Merchant.create(name: 'Apple')
       merchant_2 = Merchant.create(name: 'Banana')
       merchant_3 = Merchant.create(name: 'Carrot')
       merchant_4 = Merchant.create(name: 'Dumpling')
-     
+
       customer = Customer.create(first_name: 'Bob', last_name: 'Billy')
 
       item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
@@ -76,6 +102,6 @@ RSpec.describe Merchant, type: :model do
       expect(Merchant.most_revenue(3).second).to eq(merchant_2)
       expect(Merchant.most_revenue(3).last).to eq(merchant_3)
       expect(Merchant.most_revenue(3)).to_not include(merchant_4)
-    end 
+    end
   end
 end

@@ -197,5 +197,62 @@ describe "Merchants API" do
       expect(revenue).to_not have_key(:id)
       expect(revenue[:revenue]).to eq("30.00")
     end
+    it "returns revenue for merchant given a date" do
+      merchant = create(:merchant)
+      item1 = create(:item)
+      customer = create(:customer)
+      invoice1 = merchant.invoices.create(customer_id: customer.id, status: 'something', updated_at: Date.parse('2012-10-31'))
+      invoice2 = merchant.invoices.create(customer_id: customer.id, status: 'something')
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice1.id)
+      Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice2.id)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+
+      get "/api/v1/merchants/#{merchant.id}/revenue?date=2012-10-31"
+
+      expect(response).to be_successful
+
+      revenue = JSON.parse(response.body, symbolize_names: true)
+
+      expect(revenue).to have_key(:revenue)
+      expect(revenue).to_not have_key(:id)
+      expect(revenue[:revenue]).to eq("10.00")
+    end
+  end
+  context "GET /api/v1/merchants/most_items?quantity=x" do
+    it "can see merchants with most items" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      merchant3 = create(:merchant)
+      merchant4 = create(:merchant)
+      item1 = create(:item)
+      customer = create(:customer)
+      invoice1 = merchant1.invoices.create(customer_id: customer.id, status: 'something')
+      invoice2 = merchant2.invoices.create(customer_id: customer.id, status: 'something')
+      invoice3 = merchant3.invoices.create(customer_id: customer.id, status: 'something')
+      invoice4 = merchant4.invoices.create(customer_id: customer.id, status: 'something')
+      transaction1 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice1.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice2.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice3.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice4.id)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item1 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice1.id, quantity: 1, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+      invoice_item2 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice2.id, quantity: 2, unit_price: 1000)
+      invoice_item3 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice3.id, quantity: 4, unit_price: 1000)
+      invoice_item3 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice3.id, quantity: 4, unit_price: 1000)
+      invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
+      invoice_item4 = InvoiceItem.create(item_id: item1.id, invoice_id: invoice4.id, quantity: 3, unit_price: 1000)
+
+      get "/api/v1/merchants/most_items?quantity=3"
+
+      merchants = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(merchants[0][:id]).to eq(merchant3.id)
+      expect(merchants[1][:id]).to eq(merchant4.id)
+      expect(merchants[2][:id]).to eq(merchant2.id)
+      expect(merchants.count).to eq(3)
+    end
   end
 end
