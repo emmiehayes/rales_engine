@@ -77,8 +77,8 @@ describe "Merchants API" do
     end
   end
 
-  context "GET /api/v1/merchants/:id" do
-    it "returns single merchant" do
+  context "GET /api/v1/merchants/:id/items" do
+    it "returns single merchant items" do
       merchant_1 = Merchant.create(name: 'Bob')
       item_1 = merchant_1.items.create(name: 'box', description: 'square', unit_price: 600)
       item_2 = merchant_1.items.create(name: 'bag', description: 'plastic', unit_price: 100)
@@ -96,13 +96,39 @@ describe "Merchants API" do
     end
   end
 
+  context "GET /api/v1/merchants/:id/invoices" do
+    it "returns single merchant" do
+      merchant_1 = Merchant.create(name: 'Apple')
+      customer = Customer.create(first_name: 'Bob', last_name: 'Billy')
+
+      invoice_1 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
+      invoice_2 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
+      invoice_3 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
+      invoice_4 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
+
+      get "/api/v1/merchants/#{merchant_1.id}/invoices.json"
+
+      expect(response).to be_successful
+
+      invoices = JSON.parse(response.body, symbolize_names: true)
+
+      expect(invoices.count).to eq(4)
+      expect(invoices[0]).to have_key(:id)
+      expect(invoices[0]).to have_key(:status)
+      expect(invoices[0]).to have_key(:merchant_id)
+      expect(invoices[0]).to have_key(:customer_id)
+      expect(invoices[0]).not_to have_key(:created_at)
+      expect(invoices[0]).not_to have_key(:updated_at)
+    end
+  end
+
    context "GET /api/v1/merchants/most_revenue?quantity=x" do
     it "returns top x merchants based on total revenue " do
       merchant_1 = Merchant.create(name: 'Apple')
       merchant_2 = Merchant.create(name: 'Banana')
       merchant_3 = Merchant.create(name: 'Carrot')
       merchant_4 = Merchant.create(name: 'Dumpling')
-     
+
       customer = Customer.create(first_name: 'Bob', last_name: 'Billy')
 
       item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
@@ -142,7 +168,7 @@ describe "Merchants API" do
       merchant_2 = Merchant.create(name: 'Banana')
       merchant_3 = Merchant.create(name: 'Carrot')
       merchant_4 = Merchant.create(name: 'Dumpling')
-     
+
       customer_1 = Customer.create(first_name: 'Bob', last_name: 'Billy')
 
       item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
