@@ -304,9 +304,9 @@ describe "Merchants API" do
 
       expect(response).to be_successful
 
-      expect(revenue).to have_key(:revenue)
+      expect(revenue).to have_key(:total_revenue)
       expect(revenue).to_not have_key(:id)
-      expect(revenue[:revenue]).to eq("60.00")
+      expect(revenue[:total_revenue]).to eq("60.00")
     end
   end
 end
