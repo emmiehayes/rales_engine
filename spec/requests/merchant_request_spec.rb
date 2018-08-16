@@ -273,4 +273,33 @@ describe "Merchants API" do
       expect(merchants.count).to eq(3)
     end
   end
+  context "GET /api/v1/merchants/:id/customers_with_pending_invoices" do
+    it "can find customers with pending invoices" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      merchant3 = create(:merchant)
+      merchant4 = create(:merchant)
+      item1 = create(:item)
+      customer1 = create(:customer)
+      customer2 = create(:customer)
+      customer3 = create(:customer)
+      invoice1 = merchant1.invoices.create(customer_id: customer1.id, status: 'failed')
+      invoice2 = merchant1.invoices.create(customer_id: customer1.id, status: 'failed')
+      invoice3 = merchant3.invoices.create(customer_id: customer2.id, status: 'success')
+      invoice4 = merchant4.invoices.create(customer_id: customer3.id, status: 'success')
+      transaction1 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'failed', invoice_id: invoice1.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'failed', invoice_id: invoice2.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice3.id)
+      transaction2 = Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice4.id)
+
+      get "/api/v1/merchants/#{merchant1.id}/customers_with_pending_invoices"
+
+      customers = JSON.parse(response.body, symbolize_names: true)
+
+      expect(customers.length).to eq(1)
+      expect(customers[0][:id]).to eq(customer1.id)
+      expect(customers[0][:first_name]).to eq(customer1.first_name)
+      expect(customers[0][:last_name]).to eq(customer1.last_name)
+    end
+  end
 end

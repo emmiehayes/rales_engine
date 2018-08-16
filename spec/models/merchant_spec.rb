@@ -38,6 +38,7 @@ RSpec.describe Merchant, type: :model do
 
       expect(merchant.total_revenue).to eq(3000)
     end
+    
     it "can find customers with pending invoices" do
       merchant1 = create(:merchant)
       merchant2 = create(:merchant)
