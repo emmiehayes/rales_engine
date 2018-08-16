@@ -93,7 +93,85 @@ describe "Merchants API" do
       expect(items.first[:name]).to eq(item_1.name)
       expect(items.first[:description]).to eq(item_1.description)
       expect(items.first[:unit_price]).to eq('6.00')
+    end
+  end
 
+   context "GET /api/v1/merchants/most_revenue?quantity=x" do
+    it "returns top x merchants based on total revenue " do
+      merchant_1 = Merchant.create(name: 'Apple')
+      merchant_2 = Merchant.create(name: 'Banana')
+      merchant_3 = Merchant.create(name: 'Carrot')
+      merchant_4 = Merchant.create(name: 'Dumpling')
+     
+      customer = Customer.create(first_name: 'Bob', last_name: 'Billy')
+
+      item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
+
+      invoice_1 = Invoice.create(customer_id: customer.id, merchant_id: merchant_1.id, status:'test')
+      invoice_2 = Invoice.create(customer_id: customer.id, merchant_id: merchant_2.id, status:'test')
+      invoice_3 = Invoice.create(customer_id: customer.id, merchant_id: merchant_3.id, status:'test')
+      invoice_4 = Invoice.create(customer_id: customer.id, merchant_id: merchant_4.id, status:'test')
+
+      transaction_1 = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+
+      invoice_item_1 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 4, unit_price: 400)
+      invoice_item_2 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 3, unit_price: 400)
+      invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 3, unit_price: 400)
+      invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 2, unit_price: 400)
+      invoice_item_4 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_3.id, quantity: 2, unit_price: 400)
+      invoice_item_5 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_3.id, quantity: 1, unit_price: 400)
+      invoice_item_5 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_4.id, quantity: 2, unit_price: 400)
+
+      get "/api/v1/merchants/most_revenue?quantity=3"
+
+      expect(response).to be_successful
+
+      merchants = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchants.count).to eq(3)
+      expect(merchants[0][:id]).to eq(Merchant.first.id)
+    end
+  end
+
+  context "GET /api/v1/merchants/favorite_customer" do
+    it "returns customer with most total number of successful transactions " do
+      merchant_1 = Merchant.create(name: 'Apple')
+      merchant_2 = Merchant.create(name: 'Banana')
+      merchant_3 = Merchant.create(name: 'Carrot')
+      merchant_4 = Merchant.create(name: 'Dumpling')
+     
+      customer_1 = Customer.create(first_name: 'Bob', last_name: 'Billy')
+
+      item = Item.create(name: 'box', description: 'square', unit_price: 100, merchant_id: merchant_1.id)
+
+      invoice_1 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_1.id, status:'test')
+      invoice_2 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_2.id, status:'test')
+      invoice_3 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_3.id, status:'test')
+      invoice_4 = Invoice.create(customer_id: customer_1.id, merchant_id: merchant_4.id, status:'test')
+
+      transaction_1 = invoice_1.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_2 = invoice_2.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_3 = invoice_3.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+      transaction_4 = invoice_4.transactions.create(credit_card_number: 7678345678987654, credit_card_expiration_date: '08/10/2018', result: 'success')
+
+      invoice_item_1 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 4, unit_price: 400)
+      invoice_item_2 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_1.id, quantity: 3, unit_price: 400)
+      invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 3, unit_price: 400)
+      invoice_item_3 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_2.id, quantity: 2, unit_price: 400)
+      invoice_item_4 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_3.id, quantity: 2, unit_price: 400)
+      invoice_item_5 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_3.id, quantity: 1, unit_price: 400)
+      invoice_item_5 = InvoiceItem.create(item_id: item.id, invoice_id: invoice_4.id, quantity: 2, unit_price: 400)
+
+      get "/api/v1/merchants/#{merchant_1.id}/favorite_customer.json"
+
+      expect(response).to be_successful
+
+      customer = JSON.parse(response.body, symbolize_names: true)
+
+      expect(customer[:id]).to eq(customer_1.id)
     end
   end
 
