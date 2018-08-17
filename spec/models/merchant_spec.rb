@@ -38,7 +38,7 @@ RSpec.describe Merchant, type: :model do
 
       expect(merchant.total_revenue).to eq(3000)
     end
-    
+
     it "can find customers with pending invoices" do
       merchant1 = create(:merchant)
       merchant2 = create(:merchant)
@@ -120,10 +120,11 @@ RSpec.describe Merchant, type: :model do
     end
 
     it "master_revenue(date)" do
+      date = DateTime.parse('2000-01-01')
       merchant_1 = create(:merchant)
       customer_1 = create(:customer)
-      invoice_1 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something')
-      invoice_2 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something')
+      invoice_1 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something', updated_at: date)
+      invoice_2 = merchant_1.invoices.create(customer_id: customer_1.id, status: 'something', updated_at: date)
       item_1 = merchant_1.items.create(name: 'blah', description: 'dkhgaer', unit_price: 1000)
       item_1 = merchant_1.items.create(name: 'blah', description: 'asjkgn', unit_price: 1000)
       Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_1.id)
@@ -133,8 +134,8 @@ RSpec.describe Merchant, type: :model do
 
       merchant_2 = create(:merchant)
       customer_2 = create(:customer)
-      invoice_3 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something')
-      invoice_4 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something')
+      invoice_3 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something', updated_at: date)
+      invoice_4 = merchant_2.invoices.create(customer_id: customer_2.id, status: 'something', updated_at: date)
       item_2 = merchant_2.items.create(name: 'blah', description: 'osit', unit_price: 1000)
       item_2 = merchant_2.items.create(name: 'blah', description: 'sagnero', unit_price: 1000)
       Transaction.create(credit_card_number: '3435', credit_card_expiration_date: '10/11/12', result: 'success', invoice_id: invoice_3.id)
@@ -142,7 +143,7 @@ RSpec.describe Merchant, type: :model do
       invoice_item_3 = InvoiceItem.create(item_id: item_2.id, invoice_id: invoice_3.id, quantity: 1, unit_price: 1000)
       invoice_item_4 = InvoiceItem.create(item_id: item_2.id, invoice_id: invoice_4.id, quantity: 2, unit_price: 1000)
 
-      expect(Merchant.master_revenue("2018-08-16")).to eq(6000)
+      expect(Merchant.master_revenue("2000-01-01")).to eq(6000)
       expect(Merchant.master_revenue).to eq(6000)
     end
   end
