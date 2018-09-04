@@ -1,0 +1,39 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:3000",
+  "apis": [
+    {
+      "path": "/api/v1/invoices.{format}",
+      "description": "Invoices"
+    },
+    {
+      "path": "/api/v1/merchants.{format}",
+      "description": "Merchants"
+    },
+    {
+      "path": "/api/v1/transactions.{format}",
+      "description": "Transactions"
+    },
+    {
+      "path": "/api/v1/invoice_items.{format}",
+      "description": "Invoice Items"
+    },
+    {
+      "path": "/api/v1/items.{format}",
+      "description": "Items"
+    },
+    {
+      "path": "/api/v1/customers.{format}",
+      "description": "Customers"
+    }
+  ],
+  "authorizations": null,
+  "info": {
+    "title": "Rales Engine Project",
+    "description": "Rales-Engine is a JSON API built with Ruby, Rails and Activerecord. It’s purpose is to expose SalesEngine data schema",
+    "contact": "emmiehayes2@gmail.com",
+    "license": "Apache 2.0",
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.html"
+  }
+}
