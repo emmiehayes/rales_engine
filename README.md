@@ -3,6 +3,12 @@
 
 Rales-Engine is a JSON API built with Ruby, Rails and Activerecord. It’s purpose is to expose SalesEngine data schema.
 
+9/3/2018: Implement API Documentation & Swagger UI
+
+
+<img alt="swagger-screen" src="https://cl.ly/6cd161ada2a2/Screen%20Shot%202018-09-03%20at%207.58.31%20PM.jpg">
+
+
 ### Accessing Rales-Engine
 ```
 git clone git@github.com:sdmalek44/rales_engine.git
