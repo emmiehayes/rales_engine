@@ -16,6 +16,8 @@ cd rales_engine
 bundle update
 rake db:{drop,create,migrate}
 rake import:all
+rails s
+visit localhost:3000 from the command line for Swagger UI interface
 ```
 
 ### Gems Utilized
