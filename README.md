@@ -11,7 +11,7 @@ Rales-Engine is a JSON API built with Ruby, Rails and Activerecord. It’s purpo
 
 ### Accessing Rales-Engine
 ```
-git clone git@github.com:sdmalek44/rales_engine.git
+git clone git@github.com:emmiehayes/rales_engine.git
 cd rales_engine
 bundle update
 rake db:{drop,create,migrate}
