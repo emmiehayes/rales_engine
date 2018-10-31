@@ -22,15 +22,7 @@ visit localhost:3000 from the command line for Swagger UI interface
 
 ### Gems Utilized
 - Active_model_serializers
-- Byebug
-- Database_cleaner
-- Factory-Bot
-- Faker
-- Pry
-- Pry-rails
-- RSpec-rails
-- Shoulda-matchers
-- Simplecov
+- Simplecov -Rails
 
 #### Testing
 This application utilizes RSpec for testing.  
